@@ -156,12 +156,23 @@ export default {
     };
   },
   methods: {
+    watcher() {
+      db.collection("products").onSnapshot((querySnapshot) => {
+        this.products = [];
+        querySnapshot.forEach((doc) => {
+          this.products.push(doc);
+        });
+      });
+      
+      // this.readData(); another way (my way)
+    },
     updateProduct() {
       db.collection("products")
         .doc(this.active_item)
         .update(this.product)
-        .then(function() {
+        .then(() => {
           $("#editModal").modal("hide");
+          this.watcher();
           console.log("Document successfully updated!");
         })
         .catch(function(error) {
